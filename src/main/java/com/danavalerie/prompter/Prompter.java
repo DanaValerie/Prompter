@@ -8,12 +8,13 @@
 
 package com.danavalerie.prompter;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.function.Function;
 
 /**
@@ -26,119 +27,119 @@ import java.util.function.Function;
  */
 public final class Prompter {
 
-    private final String _errorMessage;
-    private final BufferedReader _in;
+    private static String _errorMessage = "Invalid value, please try again.";
 
-    /**
-     * Creates a prompter using the default error message.
-     */
-    public Prompter() {
-        this(null);
+    private Prompter() {
     }
 
-    /**
-     * Creates a prompter with a user-specified error message.
-     */
-    public Prompter(String errorMessage) {
-        _in = new BufferedReader(new InputStreamReader(System.in));
-        _errorMessage = errorMessage == null ? "Invalid value, please try again." : errorMessage;
+    public static void setErrorMessage(String newErrorMessage) {
+        _errorMessage = _errorMessage;
     }
 
     /**
      * Reads a line of text as a freeform string.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public String promptForString(String prompt) {
+    public static String promptForString(String prompt) {
         return prompt(prompt, Function.identity());
     }
 
     /**
      * Reads a line of text as a byte. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public byte promptForByte(String prompt) {
+    public static byte promptForByte(String prompt) {
         return prompt(prompt, Byte::parseByte);
     }
 
     /**
      * Reads a line of text as a short. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public short promptForShort(String prompt) {
+    public static short promptForShort(String prompt) {
         return prompt(prompt, Short::parseShort);
     }
 
     /**
      * Reads a line of text as an int. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public int promptForInt(String prompt) {
+    public static int promptForInt(String prompt) {
         return prompt(prompt, Integer::parseInt);
     }
 
     /**
      * Reads a line of text as a long. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public long promptForLong(String prompt) {
+    public static long promptForLong(String prompt) {
         return prompt(prompt, Long::parseLong);
     }
 
     /**
      * Reads a line of text as a float. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public float promptForFloat(String prompt) {
+    public static float promptForFloat(String prompt) {
         return prompt(prompt, Float::parseFloat);
     }
 
     /**
      * Reads a line of text as a double. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public double promptForDouble(String prompt) {
+    public static double promptForDouble(String prompt) {
         return prompt(prompt, Double::parseDouble);
     }
 
     /**
      * Reads a line of text as a BigDecimal. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public BigDecimal promptForBigDecimal(String prompt) {
+    public static BigDecimal promptForBigDecimal(String prompt) {
         return prompt(prompt, BigDecimal::new);
     }
 
     /**
      * Reads a line of text as a BigInteger. If a valid value is not entered, the error message is displayed,
      * and the user re-prompted repeatedly until a valid value is entered.
+     *
      * @param prompt The prompt to be displayed
      * @return the value entered by the user
      */
-    public BigInteger promptForBigInteger(String prompt) {
+    public static BigInteger promptForBigInteger(String prompt) {
         return prompt(prompt, BigInteger::new);
     }
 
-    private <T> T prompt(String prompt, Function<String, T> parseFunction) {
+    private static <T> T prompt(String prompt, Function<String, T> parseFunction) {
         try {
             while (true) {
                 System.out.print(prompt);
                 System.out.flush();
-                String line = _in.readLine();
+                String line = readLine();
                 try {
                     return parseFunction.apply(line);
                 } catch (NumberFormatException ex) {
@@ -147,6 +148,27 @@ public final class Prompter {
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    private static String readLine() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        InputStream in = System.in;
+        while (true) {
+            int b = in.read();
+            if (b < 0) {
+                throw new EOFException();
+            }
+            switch (b) {
+                case 13:
+                    // ignore carriage return
+                    break;
+                case 10:
+                    return baos.toString(); // use platform default encoding
+                default:
+                    baos.write(b);
+            }
+
         }
     }
 
