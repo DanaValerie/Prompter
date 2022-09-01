@@ -1,3 +1,11 @@
+/*
+   DISCLAIMER OF WARRANTY. The following code is provided "as is." The author makes no express or implied warranty
+   as to its merchantability or fitness for any particular purpose, and you accept all risk should you decide to
+   use this work in any form.
+
+   This work is hereby dedicated to the public domain.
+ */
+
 package com.danavalerie.prompter;
 
 public class Sample {
