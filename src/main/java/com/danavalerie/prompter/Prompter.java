@@ -17,10 +17,10 @@ import java.math.BigInteger;
 import java.util.function.Function;
 
 /**
- * This class is meant to be a drop-in replacement for the use of Scanner when writing textbooks. It works better
- * than scanner, it's more functional than scanner, and it's easier to understand than Scanner for a beginning
- * Java programmer. The code is public domain, feel free to copy/paste into your textbook. You can even remove
- * these notices, if you wish.
+ * This class is meant to be a drop-in replacement for the use of Scanner when writing textbooks. It fits nearly
+ * all beginner use cases of scanner, it's more functional than scanner, and it's easier to understand than
+ * Scanner for a beginning Java programmer. The code is public domain, feel free to copy/paste into your
+ * textbook or lessons. And in the spirit of public domain, you can even remove these notices, if you wish.
  *
  * @author Dana Valerie Reese, 2022
  */
