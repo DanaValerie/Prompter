@@ -48,7 +48,7 @@ public final class Prompter {
         return prompt(prompt, Long::parseLong);
     }
 
-    public double promptForFloat(String prompt) {
+    public float promptForFloat(String prompt) {
         return prompt(prompt, Float::parseFloat);
     }
 
