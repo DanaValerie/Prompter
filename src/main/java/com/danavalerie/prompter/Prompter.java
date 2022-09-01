@@ -17,7 +17,7 @@ import java.util.function.Function;
 public final class Prompter {
 
     private final BufferedReader _in;
-    private String _errorMessage;
+    private final String _errorMessage;
 
     public Prompter(InputStream in) {
         this(in, null);
